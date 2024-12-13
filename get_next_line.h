@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cmaciel- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/09 12:48:58 by cmaciel-          #+#    #+#             */
+/*   Updated: 2024/12/09 12:48:58 by cmaciel-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
@@ -11,13 +23,13 @@
 # define FD_ERROR "Cannot read file.\n"
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 42
 #endif
 
 int	ft_strlen(char *str);
 int	ft_find_newline(const char *str);
-int	read_to_buffer(int fd, char *buffer, size_t size);
 
+char	*ft_find_line(int fd, char *buffer);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*get_next_line(int fd);
 char	*ft_extract_line(char *file);

@@ -1,32 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cmaciel- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/09 12:48:46 by cmaciel-          #+#    #+#             */
+/*   Updated: 2024/12/09 12:48:46 by cmaciel-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int read_to_buffer(int fd, char *buffer, size_t size)
+char	*ft_find_line(int fd, char *buffer)
 {
-	int	bytes_read;
+	char	*line_tmp;
+	char	*line_res;
+	ssize_t	byte_read;
 
-	if (!buffer)
+	byte_read = 1;
+	line_tmp = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!line_tmp)
+		return (NULL);
+	while (byte_read != 0 && ft_find_newline(buffer) == 0)
 	{
-		write(2, BUFFER_ERROR, ft_strlen(BUFFER_ERROR));
-		return (-1);
+		line_tmp = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!line_tmp)
+			return (NULL);
+		byte_read = read(fd, line_tmp, BUFFER_SIZE);
+		if (byte_read == -1)
+			return (free(line_tmp), free(buffer), NULL);
+		line_res = ft_strjoin(buffer, line_tmp);
+		if (!line_res)
+			return (free(line_tmp), NULL);
+		free(buffer);
+		buffer = line_res;
 	}
-	if (size == 0)
-	{
-		write(2, SIZE_ERROR, ft_strlen(SIZE_ERROR));
-		return (0);
-	}
-	if (fd < 0)
-	{
-		write(2, FD_ERROR, ft_strlen(FD_ERROR));
-		return (-1);
-	}
-	//Rever a recursiva
-	//bytes_read = read(fd, buffer, size);
-	bytes_read = read_to_buffer(fd, buffer, size);
-	if (bytes_read > 0)
-		return (bytes_read);
-	else if (bytes_read == 0)
-		return (0);
-	return (-1);
+	if (ft_find_newline(buffer) == 1)
+		buffer = ft_extract_line(buffer);
+	return (buffer);
 }
 
 char	*ft_extract_line(char *file)
@@ -37,54 +49,29 @@ char	*ft_extract_line(char *file)
 	if (!file || file[0] == '\0')
 		return (NULL);
 	i = 0;
-	while (file[i] != ft_find_newline(file) && file[i] != '\0')
+	while (file[i] != '\n' && file[i] != '\0')
 		i++;
-	new_line = (char *)ft_calloc(ft_strlen(file) + 1, sizeof(char));
+	new_line = (char *)ft_calloc(i + 2, sizeof(char));
 	if (!new_line)
 		return NULL;
 	i = 0;
-	while (file[i] != ft_find_newline(file) && file[i] != '\0')
+	while (file[i] != '\n' && file[i] != '\0')
 	{
 		new_line[i] = file[i];
 		i++;
 	}
+	if (file[i] == '\n')
+		new_line[i++] = '\n';
 	new_line[i] = '\0';
-	return new_line;
+	return (new_line);
 }
 
 char *get_next_line(int fd)
 {
-	static char	*temp;
-	char	*temp_pr;
-	char	*new_line;
-	char	*filename;
-	int	bytes_read;
+	static char	*buffer;
+	char	*file;
+	ssize_t	bytes_read;
 
-	filename = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!filename)
-		return (NULL);
-	bytes_read = read_to_buffer(fd, filename, BUFFER_SIZE);
-	if (bytes_read <= 0)
-	{
-		free(filename);
-		return (NULL);
-	}
-	if (temp)
-	{
-		temp_pr = ft_strjoin(temp, filename);
-		free(temp);
-		temp = temp_pr;
-	}
-	else
-		temp = filename;
-	new_line = ft_extract_line(temp);
-	if (!new_line)
-	{
-		free(new_line);
-		return (NULL);
-	}
-	temp_pr = temp + ft_strlen(new_line);
-	free(temp);
-	temp = temp_pr;
-	return (new_line);
+	//TO DO
+	return (file);
 }

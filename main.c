@@ -10,11 +10,11 @@ int main(void)
 	}
 
 	char	*linha;
-	while ((linha = get_next_line(fd)) != NULL)
-	{
-		printf("%s\n", linha);
-		free(linha);
-	}
+	static char *buffer;
+	//linha = get_next_line(fd);
+	linha = ft_find_line(fd, buffer);
+	printf("%s\n", linha);
+	free(linha);
 
 	close (fd);
 	return (0);

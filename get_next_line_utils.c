@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cmaciel- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/09 12:48:51 by cmaciel-          #+#    #+#             */
+/*   Updated: 2024/12/09 12:48:51 by cmaciel-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 int	ft_strlen(char *str)
@@ -62,12 +74,12 @@ int	ft_find_newline(const char *str)
 
 	i = 0;
 	if (!str)
-		return (-1);
+		return (0);
 	while (str[i])
 	{
 		if (str[i] == '\n')
-			return (i);
+			return (1);
 		i++;
 	}
-	return (-1);
+	return (0);
 }
