@@ -18,16 +18,12 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
-# define BUFFER_ERROR "Buffer is empty\n"
-# define SIZE_ERROR "Size is empty\n"
-# define FD_ERROR "Cannot read file.\n"
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 42
-#endif
-
-int	ft_strlen(char *str);
-int	ft_find_newline(const char *str);
+int		ft_strlen(char *str);
+int		ft_find_newline(const char *str);
 
 char	*ft_find_line(int fd, char *buffer);
 char	*ft_strjoin(char const *s1, char const *s2);

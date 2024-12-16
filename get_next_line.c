@@ -18,60 +18,123 @@ char	*ft_find_line(int fd, char *buffer)
 	char	*line_res;
 	ssize_t	byte_read;
 
-	byte_read = 1;
 	line_tmp = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!line_tmp)
 		return (NULL);
-	while (byte_read != 0 && ft_find_newline(buffer) == 0)
+	byte_read = 1;
+	while (byte_read > 0 && ft_find_newline(buffer) == 0)
 	{
-		line_tmp = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-		if (!line_tmp)
-			return (NULL);
 		byte_read = read(fd, line_tmp, BUFFER_SIZE);
-		if (byte_read == -1)
+		if (byte_read < 0)
 			return (free(line_tmp), free(buffer), NULL);
+		line_tmp[byte_read] = '\0';
 		line_res = ft_strjoin(buffer, line_tmp);
 		if (!line_res)
-			return (free(line_tmp), NULL);
+			return (free(line_tmp), free(buffer), NULL);
 		free(buffer);
 		buffer = line_res;
 	}
-	if (ft_find_newline(buffer) == 1)
-		buffer = ft_extract_line(buffer);
+	free(line_tmp);
 	return (buffer);
 }
 
-char	*ft_extract_line(char *file)
+char	*ft_extract_line(char *buffer)
 {
 	char	*new_line;
 	int		i;
 
-	if (!file || file[0] == '\0')
+	if (!buffer || buffer[0] == '\0')
 		return (NULL);
 	i = 0;
-	while (file[i] != '\n' && file[i] != '\0')
+	while (buffer[i] != '\n' && buffer[i] != '\0')
 		i++;
 	new_line = (char *)ft_calloc(i + 2, sizeof(char));
 	if (!new_line)
-		return NULL;
+		return (NULL);
 	i = 0;
-	while (file[i] != '\n' && file[i] != '\0')
+	while (buffer[i] != '\n' && buffer[i] != '\0')
 	{
-		new_line[i] = file[i];
+		new_line[i] = buffer[i];
 		i++;
 	}
-	if (file[i] == '\n')
+	if (buffer[i] == '\n')
 		new_line[i++] = '\n';
 	new_line[i] = '\0';
 	return (new_line);
 }
 
-char *get_next_line(int fd)
+char	*ft_read_line(char *buffer)
+{
+	char	*remainder;
+	int		i;
+	int		j;
+
+	if (!buffer)
+		return (NULL);
+	i = 0;
+	while (buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	if (buffer[i] == '\0')
+		return (free(buffer), NULL);
+	remainder = (char *)ft_calloc(ft_strlen(buffer) - i, sizeof(char));
+	if (!remainder)
+		return (NULL);
+	i++;
+	j = 0;
+	while (buffer[i] != '\0')
+		remainder[j++] = buffer[i++];
+	remainder[j] = '\0';
+	free(buffer);
+	return (remainder);
+}
+
+char	*get_next_line(int fd)
 {
 	static char	*buffer;
-	char	*file;
-	ssize_t	bytes_read;
+	char		*line;
 
-	//TO DO
-	return (file);
+	buffer = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (NULL);
+	if (!buffer)
+	{
+		buffer = ft_calloc(1, sizeof(char));
+		if (!buffer)
+			return (NULL);
+	}
+	buffer = ft_find_line(fd, buffer);
+	if (!buffer)
+		return (NULL);
+	line = ft_extract_line(buffer);
+	buffer = ft_read_line(buffer);
+	if (!line)
+		return (free(buffer), NULL);
+	return (line);
+}
+
+int	main(void)
+{
+	int fd = open("text.txt", O_RDONLY);
+	char	*line;
+	//char	*line1;
+	//char	*line2;
+
+	line = get_next_line(fd);
+	//line1 = get_next_line(fd);
+	//line2 = get_next_line(fd);
+
+	printf("%s", line);
+	//printf("%s", line1);
+	//printf("%s", line2);
+
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	free(line);
+	//free(line1);
+	//free(line2);
+	close(fd);
+	return (0);
 }
