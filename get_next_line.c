@@ -78,7 +78,7 @@ char	*ft_read_line(char *buffer)
 		return (free(buffer), NULL);
 	remainder = (char *)ft_calloc(ft_strlen(buffer) - i, sizeof(char));
 	if (!remainder)
-		return (NULL);
+		return (free(buffer), NULL);
 	i++;
 	j = 0;
 	while (buffer[i] != '\0')
@@ -93,8 +93,7 @@ char	*get_next_line(int fd)
 	static char	*buffer;
 	char		*line;
 
-	buffer = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!buffer)
 	{
@@ -111,7 +110,7 @@ char	*get_next_line(int fd)
 		return (free(buffer), NULL);
 	return (line);
 }
-
+/*
 int	main(void)
 {
 	int fd = open("text.txt", O_RDONLY);
@@ -138,3 +137,4 @@ int	main(void)
 	close(fd);
 	return (0);
 }
+*/
