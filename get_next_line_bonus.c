@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: cmaciel- <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 12:48:46 by cmaciel-          #+#    #+#             */
-/*   Updated: 2024/12/09 12:48:46 by cmaciel-         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_find_line(int fd, char *buffer)
 {
@@ -90,52 +78,54 @@ char	*ft_read_line(char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[OPEN_SIZE];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!buffer)
+	if (!buffer[fd])
 	{
-		buffer = ft_calloc(1, sizeof(char));
-		if (!buffer)
+		buffer[fd] = ft_calloc(1, sizeof(char));
+		if (!buffer[fd])
 			return (NULL);
 	}
-	buffer = ft_find_line(fd, buffer);
-	if (!buffer)
+	buffer[fd] = ft_find_line(fd, buffer[fd]);
+	if (!buffer[fd])
 		return (NULL);
-	line = ft_extract_line(buffer);
-	buffer = ft_read_line(buffer);
+	line = ft_extract_line(buffer[fd]);
+	buffer[fd] = ft_read_line(buffer[fd]);
 	if (!line)
-		return (free(buffer), NULL);
+		return (free(buffer[fd]), NULL);
 	return (line);
 }
 /*
-int	main(void)
+int	main(int argc, char **argv)
 {
-	int fd = open("text.txt", O_RDONLY);
+	int		fd;
 	char	*line;
-	//char	*line1;
-	//char	*line2;
+	int		i;
 
-	line = get_next_line(fd);
-	//line1 = get_next_line(fd);
-	//line2 = get_next_line(fd);
-
-	printf("%s", line);
-	//printf("%s", line1);
-	//printf("%s", line2);
-	
-	while ((line = get_next_line(fd)) != NULL)
+	i = 1;
+	if (argc > 1)
 	{
-		printf("%s", line);
-		free(line);
+		while (i < argc)
+		{
+			fd = open(argv[i], O_RDONLY);
+			if (fd < 0)
+			{
+				i++;
+				printf("Error");
+				continue ;
+			}
+			while ((line = get_next_line(fd)) != NULL)
+			{
+				printf("%s", line);
+				free(line);
+			}
+			close(fd);
+			i++;
+		}
 	}
-
-	free(line);
-	//free(line1);
-	//free(line2);
-	close(fd);
 	return (0);
 }
 */
