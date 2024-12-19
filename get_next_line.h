@@ -25,10 +25,8 @@
 int		ft_strlen(char *str);
 int		ft_find_newline(const char *str);
 
-char	*ft_find_line(int fd, char *buffer);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*get_next_line(int fd);
-char	*ft_extract_line(char *file);
 
 void	*ft_calloc(size_t count, size_t size);
 
