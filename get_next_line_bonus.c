@@ -93,7 +93,7 @@ char	*get_next_line(int fd)
 	static char	*buffer[OPEN_SIZE];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd < OPEN_SIZE)
 		return (NULL);
 	if (!buffer[fd])
 	{

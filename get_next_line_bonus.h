@@ -23,7 +23,7 @@
 # endif
 
 # ifndef OPEN_SIZE
-#  define OPEN_SIZE 65534
+#  define OPEN_SIZE 1024
 # endif
 
 int		ft_strlen(char *str);
